@@ -8,15 +8,12 @@ export class LQGameObject {
     }
 
     start() {
-
     }
 
     update() {
-
     }
 
     on_destroy() {
-
     }
 
     destory() {
@@ -30,14 +27,11 @@ export class LQGameObject {
             }
         }
     }
-
-
-
 }
 
 let last_timestamp;
 const step = timestamp => {
-    for (let obj of LQGameObject) {
+    for (let obj of LQ_GAME_OBJECTS) {
         if (!obj.has_called_start) {
             obj.has_called_start = true;
             obj.start();
