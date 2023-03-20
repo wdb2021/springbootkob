@@ -15,6 +15,7 @@ class BackendApplicationTests {
         System.out.println(passwordEncoder.encode("a"));
         System.out.println(passwordEncoder.encode("pb"));
         System.out.println(passwordEncoder.encode("123"));
+        System.out.println(passwordEncoder.matches("123", "$2a$10$5s831w9lwlTZLk1Kk8Sta..rmfFUzuqLIuj9ol9BFBqJmdrgFWMbu"));
     }
 
 }

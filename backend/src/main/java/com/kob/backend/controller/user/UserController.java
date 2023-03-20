@@ -38,7 +38,7 @@ public class UserController {
             @PathVariable String password) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(password);
-        User user = new User(userId, username, encodedPassword);
+        User user = new User(userId, username, encodedPassword, password);
         userMapper.insert(user);
         return "Add User Successfully!";
     }
@@ -48,6 +48,5 @@ public class UserController {
         userMapper.deleteById(userId);
         return "Delete User " + userId + " successfully!";
     }
-
 
 }
