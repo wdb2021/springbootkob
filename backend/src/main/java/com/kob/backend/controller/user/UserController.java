@@ -38,7 +38,7 @@ public class UserController {
             @PathVariable String password) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(password);
-        User user = new User(userId, username, encodedPassword, password);
+        User user = new User(userId, username, encodedPassword, password, "https://lingqin.com.cn/static/image/playground/keli.jpg");
         userMapper.insert(user);
         return "Add User Successfully!";
     }

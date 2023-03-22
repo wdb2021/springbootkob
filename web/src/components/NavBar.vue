@@ -22,19 +22,31 @@
       </ul>
       <span class="navbar-text me-auto">
         欢迎来到凌骎的小游戏
-      </span> 
-      <ul class="navbar-nav">
+      </span>
+      <ul class="navbar-nav" v-if="$store.state.user.is_login">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Name: wdb
+            {{ $store.state.user.username }}
           </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+          <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown" style="margin: 0;">
             <li>
                 <router-link class="dropdown-item" :to="{name: 'user_bot_index'}">我的</router-link>
             </li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Exit</a></li>
+            <li><a class="dropdown-item" href="#" @click="logout">Exit</a></li>
           </ul>
+        </li>
+      </ul> 
+      <ul class="navbar-nav" v-else>
+        <li class="nav-item">
+          <router-link class="nav-link" :to="{name: 'user_account_login'}" role="button" aria-expanded="false">
+            Sign In
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link class="nav-link" :to="{name: 'user_account_register'}" role="button" aria-expanded="false">
+            Sign Up 
+          </router-link>
         </li>
       </ul>
     </div>
@@ -45,13 +57,21 @@
 <script>
 import { useRoute } from 'vue-router';
 import { computed } from 'vue'
+import { useStore } from 'vuex';
 
 export default {
     setup() {
+        const store = useStore();
         const route = useRoute();
         let route_name = computed(() => route.name) 
+
+        const logout = () => {
+          store.dispatch("logout");
+        }
+
         return {
-            route_name
+            route_name,
+            logout
         }
     }
 }
