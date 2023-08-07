@@ -1,7 +1,7 @@
 <template>
-  <nav-bar/>
+  <nav-bar />
 
-  <router-view/>
+  <router-view />
 </template>
 
 <script>
@@ -17,40 +17,10 @@ export default {
   setup() {
     $.ajax({
       url: "http://127.0.0.1:3000/user/account/token/",
-      type:"post",
+      type: "post",
       data: {
         username: 'admin',
         password: "123",
-      },
-      success(resp) {
-        console.log(resp);
-      },
-      error(resp) {
-        console.log(resp);
-      }
-    });
-
-    $.ajax ({
-      url: "http://127.0.0.1:3000/user/account/info/",
-      type: "get", 
-      headers: {
-        Authorization: "Bearer " + "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI3NjAwNTBhOWUwNDI0MjBlYTZiNmMzMDU4MGFlNmY5NiIsInN1YiI6IjEiLCJpc3MiOiJzZyIsImlhdCI6MTY3OTMxNDY0NiwiZXhwIjoxNjgwNTI0MjQ2fQ.6thqU1GGhBh56H-FbC2IqX9QnHUpo7bwWkZFqycUc_g"
-      },
-      success(resp) {
-        console.log(resp);
-      },
-      error(resp) {
-        console.log(resp);
-      }
-    });
-
-    $.ajax ({
-      url: "http://127.0.0.1:3000/user/account/register/",
-      type: "post", 
-      data: {
-        username: "a",
-        password: "123456",
-        confirmedPassword: "123456",
       },
       success(resp) {
         console.log(resp);
@@ -67,5 +37,5 @@ export default {
 body {
   background-image: url("./assets/images/background.jpeg");
   background-size: cover;
-} 
+}
 </style>

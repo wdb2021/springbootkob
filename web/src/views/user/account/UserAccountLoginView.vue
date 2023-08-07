@@ -1,5 +1,5 @@
 <template>
-    <ContentField>
+    <ContentField v-if="show_content">
         <div class="row justify-content-md-center">
             <div class="col-3">
                 <form @submit.prevent="login">
@@ -34,6 +34,22 @@ export default {
         let username = ref('');
         let password = ref('');
         let error_message = ref('');
+        let show_content = ref(false);
+
+        const jwt_token = localStorage.getItem("jwt_token");
+        if (jwt_token) {
+            store.commit("updateToken", jwt_token);  // save token to storage
+            store.dispatch("getinfo", {      //success thenb jump
+                success() {
+                    router.push({ name: "home" })
+                },
+                error() {
+                    show_content.value = true;
+                }
+            })
+        } else {
+            show_content.value = true;
+        }
 
         const login = () => {
             store.dispatch("login", {
@@ -54,13 +70,14 @@ export default {
         }
 
         return {
-            username, 
+            username,
             password,
             error_message,
+            show_content,
             login,
         }
     }
-} 
+}
 
 </script>
 
@@ -68,6 +85,7 @@ export default {
 button {
     width: 100%;
 }
+
 div.error-message {
     color: red;
 }

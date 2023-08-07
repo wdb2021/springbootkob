@@ -11,11 +11,12 @@ class BackendApplicationTests {
     @Test
     void contextLoads() {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        System.out.println(passwordEncoder.encode("pyxc"));
         System.out.println(passwordEncoder.encode("a"));
-        System.out.println(passwordEncoder.encode("pb"));
         System.out.println(passwordEncoder.encode("123"));
+        String encodedPasswod = passwordEncoder.encode("123");
+        System.out.println(encodedPasswod);
         System.out.println(passwordEncoder.matches("123", "$2a$10$5s831w9lwlTZLk1Kk8Sta..rmfFUzuqLIuj9ol9BFBqJmdrgFWMbu"));
+        System.out.println(passwordEncoder.matches("123", "$2a$10$YAWsYM4MoSotwtGaq.3h0.desuqDITEOPvWjqIKMQPnIoQBpZl9mO"));
     }
 
 }

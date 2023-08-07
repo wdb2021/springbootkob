@@ -38,7 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 //公开url
-                .antMatchers("/user/account/token/", "/user/account/register/").permitAll()
+                .antMatchers("/user/account/token/", "/user/account/register/", "/user/account/info/").permitAll()
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
                 .anyRequest().authenticated();
 
