@@ -42,6 +42,8 @@ export default {
                         store.commit("updateStatus", "playing");
                     }, 5000);
                 }
+                store.commit("updateGamemap", data.gamemap);
+
                 if (data.event === "test") {
                     console.log("successfully received");
                 }

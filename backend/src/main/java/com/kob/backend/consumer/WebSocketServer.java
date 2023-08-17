@@ -2,6 +2,7 @@ package com.kob.backend.consumer;
 
 
 import com.alibaba.fastjson2.JSONObject;
+import com.kob.backend.consumer.utils.Game;
 import com.kob.backend.consumer.utils.JwtAuthentication;
 import com.kob.backend.mapper.UserMapper;
 import com.kob.backend.pojo.User;
@@ -25,7 +26,7 @@ public class WebSocketServer {
 
     private Session session = null;
     private User user;
-     private static UserMapper userMapper;
+    private static UserMapper userMapper;
 
     @Autowired
     public void setUserMapper(UserMapper userMapper) {
@@ -72,16 +73,21 @@ public class WebSocketServer {
             matchpool.remove(a);
             matchpool.remove(b);
 
+            Game game = new Game(17, 18, 40);
+            game.createMap();
+
             JSONObject respA = new JSONObject();
             JSONObject respB = new JSONObject();
             respA.put("event","start-matching");
             respA.put("opponent_username", b.getUsername());
             respA.put("opponent_avatar", b.getAvatar());
+            respA.put("gamemap", game.getG());
             users.get(a.getId()).sendMessage(respA.toJSONString());
 
             respB.put("event","start-matching");
             respB.put("opponent_username", a.getUsername());
             respB.put("opponent_avatar", a.getAvatar());
+            respB.put("gamemap", game.getG());
             users.get(b.getId()).sendMessage(respB.toJSONString());
         }
         System.out.println("start matching");

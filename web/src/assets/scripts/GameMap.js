@@ -3,11 +3,12 @@ import { Snake } from "./Snake";
 import { Wall } from "./Wall";
 
 export class GameMap extends LQGameObject {
-    constructor(ctx, parent) {
+    constructor(ctx, parent, store) {
         super();
 
         this.ctx = ctx;
         this.parent = parent;
+        this.store = store;
         this.L = 0;
 
         this.rows = 17;
@@ -17,66 +18,70 @@ export class GameMap extends LQGameObject {
         this.walls = [];
 
         this.snakes = [
-            new Snake({id: 0, color: "#4876EC", r: this.rows-2, c:1}, this),
-            new Snake({id: 1, color: "#F94848", r: 1, c:this.cols-2}, this),
+            new Snake({ id: 0, color: "#4876EC", r: this.rows - 2, c: 1 }, this),
+            new Snake({ id: 1, color: "#F94848", r: 1, c: this.cols - 2 }, this),
         ];
 
     }
 
-    check_connectivity(g, sx, sy, tx, ty) {
-        if (sx == tx && sy == ty) return true;
-        g[sx][sy] = true;
+    // check_connectivity(g, sx, sy, tx, ty) {
+    //     if (sx == tx && sy == ty) return true;
+    //     g[sx][sy] = true;
 
-        let dx = [-1, 0, 1, 0], dy = [0, 1, 0, -1];
-        for (let i=0; i<4; i++) {
-            let x = sx + dx[i], y = sy + dy[i];
-            if (!g[x][y] && this.check_connectivity(g, x, y, tx, ty))
-                return true;
-        }
-        return false;
-    }
+    //     let dx = [-1, 0, 1, 0], dy = [0, 1, 0, -1];
+    //     for (let i = 0; i < 4; i++) {
+    //         let x = sx + dx[i], y = sy + dy[i];
+    //         if (!g[x][y] && this.check_connectivity(g, x, y, tx, ty))
+    //             return true;
+    //     }
+    //     return false;
+    // }
 
     create_walls() {
-        const g = [];
-        for (let r = 0; r < this.rows; r++) {
-            g[r] = [];
-            for (let c = 0; c<this.cols; c++)
-                g[r][c] = false;
-        }
+        // const g = [];
+        // for (let r = 0; r < this.rows; r++) {
+        //     g[r] = [];
+        //     for (let c = 0; c < this.cols; c++)
+        //         g[r][c] = false;
+        // }
 
-        //四周加墙
-        for (let i = 0; i<this.rows; i++) g[i][0] = g[i][this.cols-1] = true;
-        for (let i = 0; i<this.cols; i++) g[0][i] = g[this.rows-1][i] = true;
-        
-        //创建随机障碍物
-        for (let i=0; i<100; i++) {
-            let t = parseInt(Math.random() * 10);
-            if(t && t < 3) {
-                this.inner_walls_count /= t;
-                break;
-            }
-        }
-        for (let i = 0; i < this.inner_walls_count; i++) {
-            for (let j = 0; j < 1000; j++) {
-                let r = parseInt(Math.random() * this.rows);
-                let c = parseInt(Math.random() * this.cols);
-                if (g[r][c] || g[this.rows - 1 - r][this.cols - 1 - c]) continue;
-                if (r == this.rows - 2 && c == 1 || r == 1 && c == this.cols - 2) continue;
+        // //四周加墙
+        // for (let i = 0; i < this.rows; i++) g[i][0] = g[i][this.cols - 1] = true;
+        // for (let i = 0; i < this.cols; i++) g[0][i] = g[this.rows - 1][i] = true;
 
-                g[r][c] = g[this.rows - 1 - r][this.cols - 1 - c] = true;
-                break;
-            }
-        }
+        // //创建随机障碍物
+        // for (let i = 0; i < 100; i++) {
+        //     let t = parseInt(Math.random() * 10);
+        //     if (t && t < 3) {
+        //         this.inner_walls_count /= t;
+        //         break;
+        //     }
+        // }
+        // for (let i = 0; i < this.inner_walls_count; i++) {
+        //     for (let j = 0; j < 1000; j++) {
+        //         let r = parseInt(Math.random() * this.rows);
+        //         let c = parseInt(Math.random() * this.cols);
+        //         if (g[r][c] || g[this.rows - 1 - r][this.cols - 1 - c]) continue;
+        //         if (r == this.rows - 2 && c == 1 || r == 1 && c == this.cols - 2) continue;
 
-        //深拷贝,复制再生成，防止对之前的产生影响
-        const copy_g = JSON.parse(JSON.stringify(g)); 
-        if (!this.check_connectivity(copy_g, this.rows-2, 1, 1, this.cols-2)) return false;
-        
-        for (let r = 0; r<this.rows; r++)
-            for (let c = 0; c<this.cols; c++)
-                if(g[r][c]) this.walls.push(new Wall(r, c, this));
+        //         g[r][c] = g[this.rows - 1 - r][this.cols - 1 - c] = true;
+        //         break;
+        //     }
+        // }
 
-        return true;
+        // //深拷贝,复制再生成，防止对之前的产生影响
+        // const copy_g = JSON.parse(JSON.stringify(g));
+        // if (!this.check_connectivity(copy_g, this.rows - 2, 1, 1, this.cols - 2)) return false;
+
+        /*         利用后端传参         */
+        const g = this.store.state.pk.gamemap;
+
+
+        for (let r = 0; r < this.rows; r++)
+            for (let c = 0; c < this.cols; c++)
+                if (g[r][c]) this.walls.push(new Wall(r, c, this));
+
+        // return true;
     }
 
     add_listening_events() {
@@ -96,7 +101,8 @@ export class GameMap extends LQGameObject {
     }
 
     start() {
-        while(!this.create_walls());
+        // while (!this.create_walls());
+        this.create_walls();
         this.add_listening_events();
     }
 
@@ -131,8 +137,8 @@ export class GameMap extends LQGameObject {
             if (!snake.check_tail_increasing()) { //当蛇尾会前进，蛇尾不要判断
                 k--;
             }
-            for (let i=0; i<k; i++) {
-                if (snake.cells[i].r === cell.r && snake.cells[i].c===cell.c)
+            for (let i = 0; i < k; i++) {
+                if (snake.cells[i].r === cell.r && snake.cells[i].c === cell.c)
                     return false;
             }
         }
@@ -149,9 +155,9 @@ export class GameMap extends LQGameObject {
 
     render() {
         const color_even = "#AAD751", color_odd = "#A2D149";
-        for (let r = 0; r < this.rows; r++) 
+        for (let r = 0; r < this.rows; r++)
             for (let c = 0; c < this.cols; c++) {
-                if ( (r+c) %2 == 0) 
+                if ((r + c) % 2 == 0)
                     this.ctx.fillStyle = color_even;
                 else this.ctx.fillStyle = color_odd;
                 this.ctx.fillRect(c * this.L, r * this.L, this.L, this.L)

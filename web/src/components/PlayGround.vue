@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import  GameMap from './GameMap.vue';
+import GameMap from './GameMap.vue';
 
 export default {
     components: {
@@ -14,13 +14,10 @@ export default {
 }
 </script>
 
-<style scoped> 
-
-div.playground {
-    width: 90vw;
-    height: 80vh;
-    margin: 20px auto;
-}
-
+<style scoped> div.playground {
+     width: 90vw;
+     height: 80vh;
+     margin: 20px auto;
+ }
 </style>
 

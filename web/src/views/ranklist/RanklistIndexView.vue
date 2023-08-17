@@ -11,11 +11,10 @@ export default {
     components: {
         ContentField
     }
-} 
+}
 
 </script>
 
 
-<style scoped>
-</style>
+<style scoped></style>
 
