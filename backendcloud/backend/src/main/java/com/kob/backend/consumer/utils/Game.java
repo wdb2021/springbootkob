@@ -5,6 +5,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.kob.backend.consumer.WebSocketServer;
 import com.kob.backend.mapper.RecordMapper;
 import com.kob.backend.pojo.Record;
+import com.kob.backend.pojo.User;
 import org.springframework.security.core.parameters.P;
 
 import java.util.ArrayList;
@@ -201,8 +202,10 @@ public class Game extends Thread {
     }
 
     private void sendAllMessage(String message) {
-        WebSocketServer.users.get(playerA.getId()).sendMessage(message);
-        WebSocketServer.users.get(playerB.getId()).sendMessage(message);
+        if (WebSocketServer.users.get(playerA.getId()) != null)
+            WebSocketServer.users.get(playerA.getId()).sendMessage(message);
+        if (WebSocketServer.users.get(playerB.getId()) != null)
+            WebSocketServer.users.get(playerB.getId()).sendMessage(message);
     }
 
     private void sendResult() {  // result_to_client
@@ -223,7 +226,27 @@ public class Game extends Thread {
         return res.toString();
     }
 
+    private void updateUserRating(Player player, Integer rating) {
+        User user = WebSocketServer.userMapper.selectById(player.getId());
+        user.setRating(rating);
+        WebSocketServer.userMapper.updateById(user);
+    }
+
     private void saveToDatabase() {
+        Integer ratingA = WebSocketServer.userMapper.selectById(playerA.getId()).getRating();
+        Integer ratingB = WebSocketServer.userMapper.selectById(playerB.getId()).getRating();
+
+        if ("A".equals(loser)) {
+            ratingA -= 20;
+            ratingB += 40;
+        } else if ("B".equals(loser)) {
+            ratingA += 40;
+            ratingB -= 20;
+        }
+
+        updateUserRating(playerA, ratingA);
+        updateUserRating(playerB, ratingB);
+
         Record record = new Record(
             null,
             playerA.getId(),

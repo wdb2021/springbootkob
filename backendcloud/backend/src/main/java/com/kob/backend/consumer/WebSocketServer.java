@@ -32,7 +32,7 @@ public class  WebSocketServer {
 
     private Session session = null;
     private User user;
-    private static UserMapper userMapper;
+    public static UserMapper userMapper;
     public static RecordMapper recordMapper;
     private static RestTemplate restTemplate;
     private Game game = null;
@@ -83,14 +83,16 @@ public class  WebSocketServer {
         System.out.println("Disconnected!");
     }
 
-    private void startGame(Integer aId, Integer bId) {
+    public static void startGame(Integer aId, Integer bId) {
         User a = userMapper.selectById(aId), b = userMapper.selectById(bId);
 
         Game game = new Game(17, 18, 40, a.getId(), b.getId());
         game.createMap();
 
-        users.get(a.getId()).game = game;
-        users.get(b.getId()).game = game;
+        if (users.get(a.getId()) != null)
+            users.get(a.getId()).game = game;    //判断是否在线
+        if (users.get(b.getId()) != null)
+            users.get(b.getId()).game = game;
         game.start();    //每局游戏单独开一个线程
 
         JSONObject respGame = new JSONObject();
@@ -108,13 +110,15 @@ public class  WebSocketServer {
         respA.put("opponent_username", b.getUsername());
         respA.put("opponent_avatar", b.getAvatar());
         respA.put("game", respGame);
-        users.get(a.getId()).sendMessage(respA.toJSONString());
+        if (users.get(a.getId()) != null)
+            users.get(a.getId()).sendMessage(respA.toJSONString());
 
         respB.put("event","start-matching");
         respB.put("opponent_username", a.getUsername());
         respB.put("opponent_avatar", a.getAvatar());
         respB.put("game", respGame);
-        users.get(b.getId()).sendMessage(respB.toJSONString());
+        if (users.get(b.getId()) != null)
+            users.get(b.getId()).sendMessage(respB.toJSONString());
     }
 
     private void startMatching() {

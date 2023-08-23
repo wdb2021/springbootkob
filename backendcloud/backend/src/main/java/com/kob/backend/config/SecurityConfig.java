@@ -41,6 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 //公开url
                 .antMatchers("/user/account/token/", "/user/account/register/", "/user/account/info/").permitAll()
+                .antMatchers("/pk/start/game/").hasIpAddress("127.0.0.1")
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
                 .anyRequest().authenticated();
 
